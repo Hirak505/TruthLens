@@ -4,347 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TruthLens - AI Fact Checker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
-    <style>
-        body {
-            width: 350px;
-            height: 500px;
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        .chat-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .message-enter {
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        .typing-dots {
-            animation: pulse 1.5s infinite;
-        }
-        
-        .typing-dots::after {
-            content: '';
-            animation: dots 1.5s infinite;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 50%, 100% { opacity: 1; }
-            25%, 75% { opacity: 0.5; }
-        }
-        
-        @keyframes dots {
-            0%, 20% { content: '●'; }
-            40% { content: '●●'; }
-            60%, 100% { content: '●●●'; }
-        }
-        
-        .scroll-smooth {
-            scroll-behavior: smooth;
-        }
-        
-        /* Custom scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 10px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-        
-        /* Dark mode styles */
-        .dark .bg-white { background-color: #1f2937; }
-        .dark .bg-gray-50 { background-color: #111827; }
-        .dark .bg-gray-100 { background-color: #374151; }
-        .dark .text-gray-800 { color: #f9fafb; }
-        .dark .text-gray-600 { color: #d1d5db; }
-        .dark .text-gray-700 { color: #e5e7eb; }
-        .dark .border-gray-200 { border-color: #4b5563; }
-    </style>
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <div id="app" class="chat-container bg-gray-50 transition-colors duration-200">
+    <div class="chat-container">
         <!-- Header -->
-        <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                    <span class="text-white text-sm font-bold">T</span>
-                </div>
-                <div>
-                    <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-200">TruthLens</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">AI Fact Checker</p>
+        <div class="chat-header">
+            <div class="header-info">
+                <div class="header-avatar">T</div>
+                <div class="header-text">
+                    <h1>TruthLens</h1>
+                    <p>AI Fact Checker</p>
                 </div>
             </div>
-            <button id="darkModeToggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <span class="dark:hidden">🌙</span>
-                <span class="hidden dark:inline">☀️</span>
+            <button class="dark-mode-toggle" id="darkModeToggle">
+                <span class="light-icon">🌙</span>
+                <span class="dark-icon" style="display: none;">☀️</span>
             </button>
         </div>
 
-        <!-- Chat Messages Area -->
-        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+        <!-- Messages Area -->
+        <div class="messages-container" id="messagesContainer">
             <!-- Welcome Message -->
-            <div class="flex items-start space-x-2 message-enter">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span class="text-white text-xs font-bold">AI</span>
-                </div>
-                <div class="bg-white dark:bg-gray-700 rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm">
-                    <p class="text-gray-700 dark:text-gray-300 text-sm">
-                        👋 Hi! I'm TruthLens AI. Send me any text or news link, and I'll help you check its credibility!
-                    </p>
+            <div class="message ai">
+                <div class="ai-avatar">AI</div>
+                <div class="message-bubble">
+                    <p>👋 Hi! I'm TruthLens AI. Send me any text or news link, and I'll help you check its credibility!</p>
                 </div>
             </div>
         </div>
 
         <!-- Input Area -->
-        <div class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4">
-            <div class="flex space-x-2">
-                <input
-                    type="text"
-                    id="messageInput"
+        <div class="input-container">
+            <div class="input-wrapper">
+                <textarea 
+                    class="message-input" 
+                    id="messageInput" 
                     placeholder="Paste text or link to fact-check..."
-                    class="flex-1 border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
-                />
-                <button
-                    id="sendButton"
-                    class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.429a1 1 0 001.17-1.409l-7-14z"></path>
+                    rows="1"></textarea>
+                <button class="send-button" id="sendButton">
+                    <svg class="send-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                     </svg>
                 </button>
             </div>
         </div>
 
         <!-- Footer -->
-        <div class="bg-gray-100 dark:bg-gray-800 px-4 py-2 text-center">
-            <p class="text-xs text-gray-500 dark:text-gray-400">
-                Built at Hack2Skill Vision Hackathon 2025
-            </p>
+        <div class="footer">
+            <p class="footer-text">TruthLens v1.0 • AI Fact Checker</p>
+
         </div>
     </div>
 
-    <script>
-        class TruthLensChat {
-            constructor() {
-                this.chatMessages = document.getElementById('chatMessages');
-                this.messageInput = document.getElementById('messageInput');
-                this.sendButton = document.getElementById('sendButton');
-                this.darkModeToggle = document.getElementById('darkModeToggle');
-                this.isDarkMode = false;
-                
-                this.initializeEventListeners();
-                this.loadDarkMode();
-            }
-
-            initializeEventListeners() {
-                this.sendButton.addEventListener('click', () => this.sendMessage());
-                this.messageInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.sendMessage();
-                });
-                this.darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
-            }
-
-            loadDarkMode() {
-                const savedMode = localStorage.getItem('truthlens-dark-mode');
-                if (savedMode === 'true') {
-                    this.toggleDarkMode();
-                }
-            }
-
-            toggleDarkMode() {
-                this.isDarkMode = !this.isDarkMode;
-                document.documentElement.classList.toggle('dark', this.isDarkMode);
-                localStorage.setItem('truthlens-dark-mode', this.isDarkMode);
-            }
-
-            async sendMessage() {
-                const text = this.messageInput.value.trim();
-                if (!text) return;
-
-                this.messageInput.value = '';
-                this.addUserMessage(text);
-                this.showTypingIndicator();
-                
-                try {
-                    const result = await this.checkCredibility(text);
-                    this.hideTypingIndicator();
-                    this.addAIMessage(result);
-                } catch (error) {
-                    this.hideTypingIndicator();
-                    this.addErrorMessage();
-                }
-            }
-
-            addUserMessage(text) {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'flex justify-end message-enter';
-                messageElement.innerHTML = `
-                    <div class="bg-blue-600 text-white rounded-lg rounded-br-none p-3 max-w-xs shadow-sm">
-                        <p class="text-sm">${this.escapeHtml(text)}</p>
-                    </div>
-                `;
-                this.chatMessages.appendChild(messageElement);
-                this.scrollToBottom();
-            }
-
-            showTypingIndicator() {
-                const typingElement = document.createElement('div');
-                typingElement.id = 'typing-indicator';
-                typingElement.className = 'flex items-start space-x-2 message-enter';
-                typingElement.innerHTML = `
-                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white text-xs font-bold">AI</span>
-                    </div>
-                    <div class="bg-white dark:bg-gray-700 rounded-lg rounded-tl-none p-3 shadow-sm">
-                        <div class="typing-dots text-gray-500 dark:text-gray-400">Analyzing</div>
-                    </div>
-                `;
-                this.chatMessages.appendChild(typingElement);
-                this.scrollToBottom();
-            }
-
-            hideTypingIndicator() {
-                const typingIndicator = document.getElementById('typing-indicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-            }
-
-            addAIMessage(result) {
-                const statusConfig = this.getStatusConfig(result.status);
-                const messageElement = document.createElement('div');
-                messageElement.className = 'flex items-start space-x-2 message-enter';
-                messageElement.innerHTML = `
-                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white text-xs font-bold">AI</span>
-                    </div>
-                    <div class="bg-white dark:bg-gray-700 rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span class="${statusConfig.color}">${statusConfig.icon}</span>
-                            <span class="text-sm font-medium ${statusConfig.color}">${statusConfig.label}</span>
-                        </div>
-                        <div class="mb-2">
-                            <div class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                <span>Credibility Score</span>
-                                <span>${result.score}/100</span>
-                            </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                                <div class="${statusConfig.progressColor} h-2 rounded-full transition-all duration-500" style="width: ${result.score}%"></div>
-                            </div>
-                        </div>
-                        <p class="text-xs text-gray-700 dark:text-gray-300">${this.escapeHtml(result.explanation)}</p>
-                        <button class="mt-2 text-xs text-blue-600 dark:text-blue-400 hover:underline" onclick="navigator.clipboard.writeText('${this.escapeHtml(result.explanation)}')">
-                            📋 Copy Result
-                        </button>
-                    </div>
-                `;
-                this.chatMessages.appendChild(messageElement);
-                this.scrollToBottom();
-            }
-
-            addErrorMessage() {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'flex items-start space-x-2 message-enter';
-                messageElement.innerHTML = `
-                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white text-xs font-bold">AI</span>
-                    </div>
-                    <div class="bg-white dark:bg-gray-700 rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm">
-                        <p class="text-sm text-red-600 dark:text-red-400">
-                            ❌ Sorry, I couldn't analyze that content right now. Please try again later.
-                        </p>
-                    </div>
-                `;
-                this.chatMessages.appendChild(messageElement);
-                this.scrollToBottom();
-            }
-
-            async checkCredibility(text) {
-                // For demo purposes, simulate API call
-                // Replace with actual API call:
-                // const response = await axios.post('/api/check', { text });
-                // return response.data;
-                
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                const statuses = ['trustworthy', 'suspicious', 'misinformation'];
-                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                
-                return {
-                    status: randomStatus,
-                    score: Math.floor(Math.random() * 100),
-                    explanation: `Based on my analysis, this content appears to be ${randomStatus}. I've cross-referenced it with reliable sources and analyzed the language patterns, source credibility, and factual claims.`
-                };
-            }
-
-            getStatusConfig(status) {
-                const configs = {
-                    trustworthy: {
-                        icon: '✅',
-                        label: 'Trustworthy',
-                        color: 'text-green-600 dark:text-green-400',
-                        progressColor: 'bg-green-500'
-                    },
-                    suspicious: {
-                        icon: '⚠️',
-                        label: 'Suspicious',
-                        color: 'text-yellow-600 dark:text-yellow-400',
-                        progressColor: 'bg-yellow-500'
-                    },
-                    misinformation: {
-                        icon: '❌',
-                        label: 'Misinformation',
-                        color: 'text-red-600 dark:text-red-400',
-                        progressColor: 'bg-red-500'
-                    }
-                };
-                return configs[status] || configs.suspicious;
-            }
-
-            scrollToBottom() {
-                setTimeout(() => {
-                    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-                }, 100);
-            }
-
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-        }
-
-        // Initialize the chat when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            new TruthLensChat();
-        });
-    </script>
+    <script src="popup.js"></script>
 </body>
 </html>
