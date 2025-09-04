@@ -70,14 +70,6 @@ TruthLens provides **instant, AI-powered credibility analysis** directly in the 
 
 ---
 
-```bash
-```
-
-```bash
-```
-
----
-
 ## 🏆 Awards & Recognition
 
 ### 🥇 Hack2Skill Vision Hackathon 2025
