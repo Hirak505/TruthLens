@@ -4,12 +4,10 @@
   "version": "1.0.0",
   "description": "AI-powered fact-checking extension with WhatsApp-style chat interface",
   "permissions": [
+    "storage",
     "activeTab",
-    "storage"
-  ],
-  "host_permissions": [
-    "http://localhost:*/*",
-    "https://*/*"
+    "contextMenus",        
+    "scripting"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -20,6 +18,9 @@
       "128": "icons/icon128.png"
     }
   },
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -27,18 +28,9 @@
       "css": ["content.css"]
     }
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": ["popup.html", "popup.css"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  }
 }
