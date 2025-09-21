@@ -30,19 +30,18 @@
                 <button id="openPanelBtn" class="open-panel-btn" title="Show Analysis">📊</button>
             </div>
         </div>
-
+        
         <!-- Messages Area -->
         <div class="messages-container" id="messagesContainer">
             <!-- Welcome Message -->
             <div class="message ai">
                 <div class="ai-avatar">AI</div>
                 <div class="message-bubble">
-                    <p>👋 Hi! I'm TruthLens AI.<br>
-                    Send me any text or news link, and I'll help you check its credibility!</p>
+                    <p>👋 Hi! I'm TruthLens AI. Send me any text or news link, and I'll help you check its credibility!</p>
                 </div>
             </div>
         </div>
-
+        
         <!-- Input Area -->
         <div class="input-container">
             <div class="input-wrapper">
@@ -58,22 +57,24 @@
                 </button>
             </div>
         </div>
-
+        
         <!-- Footer -->
         <div class="footer">
             <p class="footer-text">TruthLens v1.0 • AI Fact Checker</p>
-            <a href="" target="_blank" class="footer-link">GitHub</a>
+            <a href="https://github.com/yourusername/truthlens" target="_blank" class="footer-link">GitHub</a>
         </div>
     </div>
 
-    <!-- Side Panel for Gemini Analysis -->
+    <!-- Side Panel for Analysis Results -->
     <div id="sidePanel" class="side-panel">
         <div class="side-panel-header">
-            <span>Gemini Analysis</span>
-            <button id="closePanelBtn" title="Close">&times;</button>
+            <span>📊 Analysis Details</span>
+            <button id="closePanelBtn" class="close-panel-btn" title="Close">&times;</button>
         </div>
         <div id="sidePanelContent" class="side-panel-content">
-            <!-- Gemini results will be injected here -->
+            <div class="analysis-placeholder">
+                <p>🔍 Click "Show Analysis" after fact-checking to see detailed results here.</p>
+            </div>
         </div>
     </div>
 
