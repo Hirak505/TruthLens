@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruthLens - AI Fact Checker</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-info">
+                <div class="header-avatar">T</div>
+                <div class="header-text">
+                    <h1>TruthLens</h1>
+                    <p>AI Fact Checker</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <select id="analysisMode" class="mode-selector">
+                    <option value="hybrid">🔄 Hybrid</option>
+                    <option value="local">⚡ Local</option>
+                    <option value="cloud">🧠 Cloud</option>
+                </select>
+                <button class="dark-mode-toggle" id="darkModeToggle">
+                    <span class="light-icon">🌙</span>
+                    <span class="dark-icon" style="display: none;">☀️</span>
+                </button>
+                <button id="openPanelBtn" class="open-panel-btn" title="Show Analysis">📊</button>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="messages-container" id="messagesContainer">
+            <!-- Welcome Message -->
+            <div class="message ai">
+                <div class="ai-avatar">AI</div>
+                <div class="message-bubble">
+                    <p>👋 Hi! I'm TruthLens AI.<br>
+                    Send me any text or news link, and I'll help you check its credibility!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-container">
+            <div class="input-wrapper">
+                <textarea 
+                    class="message-input" 
+                    id="messageInput" 
+                    placeholder="Paste text or link to fact-check..."
+                    rows="1"></textarea>
+                <button class="send-button" id="sendButton" title="Send">
+                    <svg class="send-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">TruthLens v1.0 • AI Fact Checker</p>
+            <a href="" target="_blank" class="footer-link">GitHub</a>
+        </div>
+    </div>
+
+    <!-- Side Panel for Gemini Analysis -->
+    <div id="sidePanel" class="side-panel">
+        <div class="side-panel-header">
+            <span>Gemini Analysis</span>
+            <button id="closePanelBtn" title="Close">&times;</button>
+        </div>
+        <div id="sidePanelContent" class="side-panel-content">
+            <!-- Gemini results will be injected here -->
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
